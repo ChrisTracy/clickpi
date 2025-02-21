@@ -3,7 +3,10 @@ name: Deploy to Docker Hub
 on:
   push:
     branches:
-      - main  # Change this to your main branch
+      - main
+    paths-ignore:
+      - '**/*.md'
+    
 
 jobs:
   build-and-deploy:
