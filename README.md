@@ -87,4 +87,4 @@ docker-compose up -d
 | Method   | URI                                      | Description                                                  |  Params             | Auth      |
 | -------- | ---------------------------------------- | -------------------------------------------------------------| ------------------- |---------- |
 | `POST`   | `{default_host}/api/v1/trigger`          | Triggers the relay with the defualt GPIO pin                 |                     | `api_key` |
-| `POST`   | `{default_host}/api/v1/customtrigger`    | Triggers the relay but you can specify the GPIO pin and time | `pin` `click_time`  | `api_key` |
+| `POST`   | `{default_host}/api/v1/customtrigger`    | Triggers the relay but you can specify the GPIO pin and time | `pin` `click_delay`  | `api_key` |
