@@ -1,0 +1,6 @@
+Flask
+flask_sqlalchemy
+waitress
+PyJWT
+RPi.GPIO
+Flask-Limiter

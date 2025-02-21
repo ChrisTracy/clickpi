@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClickPi Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding-top: 70px; /* Adjusted for fixed header */
+    }
+
+    /* Header Styles */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #2c3e50; /* Updated to match admin dashboard */
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      z-index: 1000;
+    }
+
+    header h2 {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      margin: 40px auto; /* Adjusted margin to space from header */
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-container input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border 0.3s ease;
+      box-sizing: border-box;
+      background: none;
+    }
+
+    .input-container input:focus {
+      border-color: #1abc9c; /* Updated accent color */
+      outline: none;
+    }
+
+    .input-container label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: #999;
+      font-size: 16px;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      background-color: white;
+      padding: 0 4px;
+    }
+
+    .input-container input:focus + label,
+    .input-container input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 8px;
+      font-size: 12px;
+      color: #1abc9c; /* Updated accent color */
+    }
+
+    button {
+      background-color: #1abc9c; /* Updated accent color */
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #16a085; /* Slightly darker teal */
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 600px) {
+      .login-container {
+        padding: 20px;
+        margin: 20px auto;
+      }
+
+      header h2 {
+        font-size: 18px;
+      }
+
+      .input-container input {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>ClickPi Admin Login</h2>
+  </header>
+
+  <div class="login-container">
+    {% if error %}
+      <p class="error-message">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST">
+      <div class="input-container">
+        <input type="password" id="password" name="password" placeholder=" " required>
+        <label for="password">Password</label>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+</body>
+</html>

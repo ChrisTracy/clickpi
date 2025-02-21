@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta Tags and Title -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClickPi Admin Dashboard</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Styles -->
+  <style>
+    /* Base styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding-top: 70px; /* for fixed header */
+    }
+
+    /* Top Header Styles */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #2c3e50; /* Dark, modern blue */
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      z-index: 1000;
+    }
+
+    header h2 {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .logout-button {
+      background-color: #f44336;
+      color: white;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+    }
+
+    .logout-button:hover {
+      background-color: #d32f2f;
+    }
+
+    .logout-button .material-icons {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    /* Add User Card */
+    #add-user-section {
+      width: 90%;
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Card Header acts as the toggle button */
+    .card-header {
+      background-color: #1abc9c; /* Vibrant teal */
+      color: white;
+      padding: 15px 20px;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .card-header h3 {
+      margin: 0;
+    }
+
+    /* Card Body is hidden by default */
+    .card-body {
+      padding: 30px;
+      display: none;
+    }
+
+    .card-body.show {
+      display: block;
+    }
+
+    #add-user-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #add-user-form .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #add-user-form label {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    #add-user-form input {
+      font-size: 1rem;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: border 0.3s, box-shadow 0.3s;
+    }
+    #add-user-form input:focus {
+      border-color: #1abc9c; /* match add user accent */
+      box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+    }
+
+    /* Add User Button */
+    #add-user-form button {
+      padding: 12px;
+      font-size: 1rem;
+      background-color: #1abc9c; /* matching add user accent */
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    #add-user-form button:hover {
+      background-color: #16a085; /* slightly darker teal */
+      transform: scale(1.02);
+    }
+
+    #addUserMessage {
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    /* Table Styles */
+    table {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      position: relative;
+    }
+
+    th {
+      background-color: #2980b9; /* bright modern blue */
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      color: #555;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Add a class for expiration date column */
+    .expiration-col {
+      /* This will be hidden on mobile via media query */
+    }
+
+    /* Slider Toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    /* Enabled Slider Color */
+    input:checked + .slider {
+      background-color: #2980b9; /* matching table header */
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Kebab Menu Styles */
+    .kebab-menu {
+      position: relative;
+      display: inline-block;
+      z-index: 2;
+    }
+
+    .kebab-menu-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      font-size: 24px;
+      color: #555;
+    }
+
+    .kebab-dropdown {
+      display: none;
+      position: absolute;
+      top: 0;
+      background-color: #fff;
+      min-width: 120px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 10;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .kebab-dropdown.upward {
+      top: auto;
+      bottom: 0;
+    }
+
+    .kebab-dropdown a {
+      color: #555;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+    }
+
+    .kebab-dropdown a:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 600px) {
+      table, #add-user-section {
+        width: 100%;
+      }
+      th, td {
+        padding: 10px;
+        font-size: 14px;
+      }
+      header h2 {
+        font-size: 18px;
+      }
+      .logout-button {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+      .kebab-dropdown a {
+        padding: 10px 12px;
+      }
+      /* Hide expiration date column on mobile */
+      .expiration-col {
+        display: none;
+      }
+    }
+
+    /* Modal Popup Styles */
+    #apiKeyModal {
+      display: none; 
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    #apiKeyModalContent {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
+      position: relative;
+      text-align: center;
+    }
+    .closeModal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+    }
+    .closeModal:hover {
+      color: #000;
+    }
+    .apiKeyText {
+      font-family: monospace;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      word-wrap: break-word;
+    }
+    .copyButton {
+      background-color: #1abc9c;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .copyButton:hover {
+      background-color: #16a085;
+    }
+
+    /* Toast Notification Styles */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 3000;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      font-size: 17px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, visibility 0.5s;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <h2>ClickPi Admin Dashboard</h2>
+    <a href="{{ url_for('admin_logout') }}" class="logout-button">
+      <span class="material-icons">logout</span> Logout
+    </a>
+  </header>
+
+  <!-- Add New User Card -->
+  <section id="add-user-section">
+    <div class="card-header" id="add-user-header">
+      <h3>Add New User</h3>
+      <span class="material-icons" id="toggle-icon">add</span>
+    </div>
+    <div class="card-body" id="add-user-body">
+      <form id="add-user-form">
+        <div class="form-group">
+          <label for="name">Username:</label>
+          <input type="text" id="name" name="name" placeholder="Enter username" required>
+        </div>
+        <button type="submit">Add User</button>
+      </form>
+      <div id="addUserMessage"></div>
+    </div>
+  </section>
+
+  <!-- User Table -->
+  <table>
+    <tr>
+      <th>Username</th>
+      <th class="expiration-col">Expiration</th>
+      <th>Enabled</th>
+      <th>Actions</th>
+    </tr>
+    {% for user in users %}
+    <tr id="user-row-{{ user.id }}">
+      <td>{{ user.username }}</td>
+      <td class="expiration-col">
+        {% if user.api_key_expiration %}
+          {{ user.api_key_expiration.strftime('%Y-%m-%d %H:%M:%S') }} UTC
+        {% else %}
+          N/A
+        {% endif %}
+      </td>
+      <td>
+        <form method="POST" action="{% if user.enabled %}{{ url_for('admin_disable_user', user_id=user.id) }}{% else %}{{ url_for('admin_enable_user', user_id=user.id) }}{% endif %}">
+          <label class="switch">
+            <input type="checkbox" name="enabled" {% if user.enabled %}checked{% endif %} onchange="this.form.submit()">
+            <span class="slider"></span>
+          </label>
+        </form>
+      </td>
+      <td>
+        <div class="kebab-menu">
+          <button class="kebab-menu-button" onclick="toggleMenu(event, {{ user.id }})">
+            <span class="material-icons">more_vert</span>
+          </button>
+          <div id="menu-{{ user.id }}" class="kebab-dropdown">
+            <a href="#" onclick="regenerateApiToken(event, {{ user.id }}, '{{ user.username }}')">Regenerate API Token</a>
+            <a href="#" onclick="confirmDelete(event, {{ user.id }}, '{{ user.username }}')">Delete</a>
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <!-- API Key Modal Popup -->
+  <div id="apiKeyModal">
+    <div id="apiKeyModalContent">
+      <span class="closeModal" onclick="closeApiKeyModal()">&times;</span>
+      <h3>API Key</h3>
+      <div class="apiKeyText" id="apiKeyText"></div>
+      <button class="copyButton" onclick="copyApiKey()">Copy API Key</button>
+      <div id="toast"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Toggle the card body (form) when clicking the card header
+    document.getElementById('add-user-header').addEventListener('click', function() {
+      const cardBody = document.getElementById('add-user-body');
+      const toggleIcon = document.getElementById('toggle-icon');
+      if (cardBody.classList.contains('show')) {
+        cardBody.classList.remove('show');
+        toggleIcon.textContent = 'add';
+      } else {
+        cardBody.classList.add('show');
+        toggleIcon.textContent = 'remove';
+      }
+    });
+
+    // Handle "Add User" form submission
+    document.getElementById('add-user-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const messageEl = document.getElementById('addUserMessage');
+      messageEl.textContent = '';
+      
+      try {
+        const response = await fetch('/api/v1/user/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name})
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+          messageEl.style.color = 'green';
+          messageEl.textContent = data.message;
+          
+          // Show API key in modal popup
+          showApiKeyModal(data.api_key);
+          
+          // Dynamically create and insert a new table row using the returned user details
+          const table = document.querySelector('table');
+          const newRow = `
+            <tr id="user-row-${data.user.id}">
+              <td>${data.user.username}</td>
+              <td class="expiration-col">${data.user.api_key_expiration || 'N/A'}</td>
+              <td>
+                <form method="POST" action="${data.user.enabled ? '/api/v1/user/disable/' + data.user.id : '/api/v1/user/enable/' + data.user.id}">
+                  <label class="switch">
+                    <input type="checkbox" name="enabled" ${data.user.enabled ? 'checked' : ''} onchange="this.form.submit()">
+                    <span class="slider"></span>
+                  </label>
+                </form>
+              </td>
+              <td>
+                <div class="kebab-menu">
+                  <button class="kebab-menu-button" onclick="toggleMenu(event, ${data.user.id})">
+                    <span class="material-icons">more_vert</span>
+                  </button>
+                  <div id="menu-${data.user.id}" class="kebab-dropdown">
+                    <a href="#" onclick="regenerateApiToken(event, ${data.user.id}, '${data.user.username}')">Regenerate API Token</a>
+                    <a href="#" onclick="confirmDelete(event, ${data.user.id}, '${data.user.username}')">Delete</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+          table.insertAdjacentHTML('beforeend', newRow);
+          
+          // Optionally, clear the form fields
+          document.getElementById('add-user-form').reset();
+        } else {
+          messageEl.style.color = 'red';
+          messageEl.textContent = data.message;
+        }
+      } catch (error) {
+        messageEl.style.color = 'red';
+        messageEl.textContent = 'An error occurred. Please try again.';
+      }
+    });
+    
+    // Toggle kebab menu display
+    function toggleMenu(event, userId) {
+      event.stopPropagation();
+      const menu = document.getElementById('menu-' + userId);
+
+      // Close any open menus
+      document.querySelectorAll('.kebab-dropdown').forEach(dropdown => {
+        if (dropdown !== menu) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('upward');
+          dropdown.style.top = '';
+          dropdown.style.bottom = '';
+          dropdown.style.left = '';
+          dropdown.style.right = '';
+        }
+      });
+
+      // Toggle current menu
+      const isVisible = menu.style.display === 'block';
+      if (isVisible) {
+        menu.style.display = 'none';
+        menu.classList.remove('upward');
+        menu.style.top = '';
+        menu.style.bottom = '';
+        menu.style.left = '';
+        menu.style.right = '';
+        return;
+      } else {
+        menu.style.display = 'block';
+      }
+
+      // Adjust position based on available space
+      const menuRect = menu.getBoundingClientRect();
+      const menuWidth = menuRect.width;
+      const menuHeight = menuRect.height;
+      const buttonRect = event.currentTarget.getBoundingClientRect();
+      const spaceRight = window.innerWidth - buttonRect.right;
+      const spaceLeft = buttonRect.left;
+      const spaceBelow = window.innerHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      menu.classList.remove('upward');
+      menu.style.left = '';
+      menu.style.right = '';
+      menu.style.top = '';
+      menu.style.bottom = '';
+
+      if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+        menu.classList.add('upward');
+      }
+
+      if (spaceRight >= menuWidth + 5) {
+        menu.style.left = 'calc(100% + 5px)';
+        menu.style.right = 'auto';
+      } else if (spaceLeft >= menuWidth + 5) {
+        menu.style.left = 'auto';
+        menu.style.right = 'calc(100% + 5px)';
+      } else {
+        menu.style.left = 'calc(100% + 5px)';
+        menu.style.right = 'auto';
+      }
+
+      if (menu.classList.contains('upward')) {
+        const menuTop = buttonRect.top - menuHeight;
+        if (menuTop < 0) {
+          menu.style.bottom = -menuTop + 'px';
+        }
+      } else {
+        const menuBottom = buttonRect.bottom + menuHeight;
+        if (menuBottom > window.innerHeight) {
+          menu.style.top = -(menuBottom - window.innerHeight) + 'px';
+        }
+      }
+    }
+
+    // Close kebab menu if clicked outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.kebab-menu-button') && !event.target.closest('.kebab-menu')) {
+        document.querySelectorAll('.kebab-dropdown').forEach(dropdown => {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('upward');
+          dropdown.style.top = '';
+          dropdown.style.bottom = '';
+          dropdown.style.left = '';
+          dropdown.style.right = '';
+        });
+      }
+      // Also close the API Key modal if clicked outside its content
+      const modal = document.getElementById('apiKeyModal');
+      if (event.target == modal) {
+        closeApiKeyModal();
+      }
+    };
+
+    // Confirm deletion of a user
+    function confirmDelete(event, userId, username) {
+      event.preventDefault();
+      if (confirm('Are you sure you want to delete user "' + username + '"?')) {
+        // Dynamically create and submit a form for deletion
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/api/v1/user/delete/' + userId;
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    // Regenerate API Token function (shows API key in popup)
+    function regenerateApiToken(event, userId, username) {
+      event.preventDefault();
+      if (confirm('Are you sure you want to regenerate the API token for user "' + username + '"?')) {
+        fetch('/api/v1/user/regenerate/' + userId, {
+          method: 'POST',
+          credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.api_key) {
+            showApiKeyModal(data.api_key);
+          } else {
+            alert('Error regenerating API token: ' + data.message);
+          }
+        })
+        .catch(error => {
+          alert('Error: ' + error);
+        });
+      }
+    }
+
+    // Modal functions
+    function showApiKeyModal(apiKey) {
+      const modal = document.getElementById('apiKeyModal');
+      const apiKeyText = document.getElementById('apiKeyText');
+      apiKeyText.textContent = apiKey;
+      modal.style.display = 'block';
+    }
+
+    function closeApiKeyModal() {
+      document.getElementById('apiKeyModal').style.display = 'none';
+    }
+
+    function copyApiKey() {
+      const apiKey = document.getElementById('apiKeyText').textContent;
+      navigator.clipboard.writeText(apiKey).then(function() {
+        showToast("API Key copied to clipboard!");
+      }, function(err) {
+        showToast("Failed to copy API Key: " + err);
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
