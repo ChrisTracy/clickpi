@@ -50,13 +50,13 @@ mkdir clickpi && cd clickpi && nano docker-compose.yml
         SECRET_KEY: "LongSuperSecretKey"      # This can be anything but it should be long, random, and kept secret
         ADMIN_PASSWORD: "SuperSecretPassword" # Password for the admin panel
         GPIO_PIN: "16"                        # GPIO PIN used for the trigger route (this is the GPIO number, NOT the pin number)
-        
-      volumes:
-        - ./db:/data
 
         #API_EXPIRATION_DAYS: 90  # Number of days before the API token will expire (Default: 365)
         #CLICK_DELAY: .50         # Time between closing and opening the relay on the trigger route (Default: .10)
         #TRIGGER_LIMIT: 5         # The amount of times the trigger routes can be called within 1 minute (Default: 8)
+        
+      volumes:
+        - ./db:/data
         
       ports:
         - "5151:5151"
