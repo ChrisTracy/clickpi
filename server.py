@@ -149,6 +149,15 @@ def api_key_required(f):
         return f(user, *args, **kwargs)
     return decorated
 
+# ----------------------------------------------------------------------------- 
+# Protected Endpoint: Verify API Key (requires valid API key)
+# -----------------------------------------------------------------------------
+@app.route('/api/v1/verify', methods=['GET'])
+@api_key_required
+def verify(user):
+    logger.info("Verification endpoint accessed by user %s from %s", user.username, get_client_ip())
+    return jsonify({'message': 'Ok', 'user': user.username}), 200
+
 # -----------------------------------------------------------------------------
 # Protected Endpoint: Trigger (requires valid API key)
 # -----------------------------------------------------------------------------
