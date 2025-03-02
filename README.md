@@ -16,9 +16,7 @@ Includes a mobile-friendly admin dashboard and API endpoints that will allow you
 This is the hardware I am using. You can certainly do this with less. A pi0, jumper wires, and any relay will work.
 
 - [Raspberry Pi 3B+](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/)
-- [RPi GPIO Terminal Block Breakout Board HAT](https://www.amazon.com/gp/product/B0876V959B)
-- [HiLetgo 5V One Channel Relay Module](https://www.amazon.com/gp/product/B00LW15A4W)
-- [16 Gauge Wire Combo 6 Pack](https://www.amazon.com/gp/product/B07MBWKX53)
+- [Electronics-Salon RPi Power Relay Board](https://www.amazon.com/dp/B07CZL2SKN?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_1)
 
 ## Wiring
 ![Raspberry Pi 3 Wiring](diagrams/pi-wiring.jpg)
@@ -28,7 +26,7 @@ This is the hardware I am using. You can certainly do this with less. A pi0, jum
 ### 1. Install Docker:
 - [Docker Install Documentation](https://docs.docker.com/engine/install/debian/)
 
-### 2. Add the current user to the docker group to avoid using sudo. You must lougout and back in after doing this, otherwise you will need to sudo the rest of the commands!:
+### 2. Add the current user to the docker group to avoid using sudo. You must log out and back in after doing this, otherwise you will need to sudo the rest of the commands!:
 ```bash
 sudo usermod -aG docker ${USER}
 ```
@@ -53,7 +51,7 @@ mkdir clickpi && cd clickpi && nano docker-compose.yml
 
         #API_EXPIRATION_DAYS: 90  # Number of days before the API token will expire (Default: 365)
         #CLICK_DELAY: .50         # Time between closing and opening the relay on the trigger route (Default: .10)
-        #TRIGGER_LIMIT: 5         # The amount of times the trigger routes can be called within 1 minute (Default: 8)
+        #TRIGGER_LIMIT: 5         # The number of times the trigger routes can be called within 1 minute (Default: 8)
         
       volumes:
         - ./db:/data
@@ -86,5 +84,9 @@ docker-compose up -d
 
 | Method   | URI                                      | Description                                                  |  Params             | Auth      |
 | -------- | ---------------------------------------- | -------------------------------------------------------------| ------------------- |---------- |
-| `POST`   | `{default_host}/api/v1/trigger`          | Triggers the relay with the defualt GPIO pin                 |                     | `api_key` |
+| `POST`   | `{default_host}/api/v1/trigger`          | Triggers the relay with the default GPIO pin                 |                     | `api_key` |
 | `POST`   | `{default_host}/api/v1/customtrigger`    | Triggers the relay but you can specify the GPIO pin and time | `pin` `click_delay`  | `api_key` |
+
+## Clients
+
+- **Home Assitant (HACS)** - Add this to your custom repositories in hacs for a garage door: `https://github.com/christracy/clickpi_garage_door`. For detailed instructions refer to the [clickpi_garage_door repo](https://github.com/christracy/clickpi_garage_door).
